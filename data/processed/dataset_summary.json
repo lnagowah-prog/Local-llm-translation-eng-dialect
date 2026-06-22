@@ -1,0 +1,27 @@
+{
+  "full": {
+    "num_examples": 200,
+    "domains": {
+      "conversation": 22,
+      "daily_life": 20,
+      "family": 20,
+      "food": 20,
+      "greeting": 8,
+      "health": 10,
+      "narrative": 20,
+      "public_services": 20,
+      "school": 20,
+      "travel": 30,
+      "weather": 10
+    },
+    "source_language_codes": [
+      "eng_Latn"
+    ],
+    "target_language_codes": [
+      "vec_Latn"
+    ]
+  },
+  "train_size": 160,
+  "dev_size": 20,
+  "test_size": 20
+}

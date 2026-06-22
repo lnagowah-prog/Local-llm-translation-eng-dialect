@@ -29,6 +29,20 @@ def parse_python_examples(input_file: str | Path) -> list[dict]:
     raise ValueError("Could not find `examples = [...]` in the input file.")
 
 
+def parse_jsonl_examples(input_file: str | Path) -> list[dict]:
+    """Parse a JSONL file containing one record per line."""
+    path = Path(input_file)
+    return [normalize_record(record) for record in read_jsonl(path)]
+
+
+def load_examples(input_file: str | Path) -> list[dict]:
+    """Load records from either a Python dataset file or a JSONL file."""
+    path = Path(input_file)
+    if path.suffix.lower() == ".jsonl":
+        return parse_jsonl_examples(path)
+    return parse_python_examples(path)
+
+
 def normalize_record(record: dict) -> dict:
     """Keep only expected fields and normalize whitespace."""
     normalized = {}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Import the user's Python-format dataset and create train/dev/test splits."""
+"""Import a dataset and create train/dev/test splits."""
 
 from __future__ import annotations
 
@@ -13,12 +13,16 @@ SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
-from dataset import parse_python_examples, stratified_split, summarize_dataset, write_jsonl
+from dataset import load_examples, stratified_split, summarize_dataset, write_jsonl
 
 
 def build_argparser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input-file", required=True, help="Path to the pasted Python dataset file.")
+    parser.add_argument(
+        "--input-file",
+        required=True,
+        help="Path to a dataset file in Python `examples = [...]` or JSONL format.",
+    )
     parser.add_argument("--output-dir", default="data/processed", help="Directory for processed files.")
     return parser
 
@@ -28,7 +32,7 @@ def main() -> None:
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    records = parse_python_examples(args.input_file)
+    records = load_examples(args.input_file)
     train, dev, test = stratified_split(records)
     summary = {
         "full": summarize_dataset(records),
