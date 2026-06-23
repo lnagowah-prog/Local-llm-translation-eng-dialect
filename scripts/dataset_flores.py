@@ -19,7 +19,7 @@ TARGET_FILENAME = "vec_Latn.dev"
 DEFAULT_DOMAIN = "unknown"
 DIALECT_LABEL = "normalized_venetian"
 SOURCE_TYPE = "manual_translation"
-OUTPUT_JSONL = BASE_DIR / f"{SOURCE_LANG}_{TARGET_LANG}_dataset.jsonl"
+OUTPUT_JSONL = BASE_DIR / "data" / f"{SOURCE_LANG}_{TARGET_LANG}_dataset.jsonl"
 
 
 def find_source_file(source_dir: Path, filename: str) -> Path:
@@ -40,6 +40,22 @@ def resolve_source_dir() -> Path:
     )
     if local_files_exist:
         return BASE_DIR
+
+    cached_dataset_root = (
+        Path.home()
+        / ".cache"
+        / "kagglehub"
+        / "datasets"
+        / "venkataanuhyatummala"
+        / "flores200data"
+        / "versions"
+    )
+    cached_versions = sorted(
+        (path for path in cached_dataset_root.glob("*") if path.is_dir()),
+        reverse=True,
+    )
+    if cached_versions:
+        return cached_versions[0]
 
     if kagglehub is None:
         raise ImportError(
@@ -85,6 +101,7 @@ def build_translation_dataset(source_dir: Path) -> pd.DataFrame:
 
 
 def save_jsonl(df: pd.DataFrame, output_path: Path) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     df.to_json(output_path, orient="records", lines=True, force_ascii=False)
     return output_path
 

@@ -1,0 +1,45 @@
+{
+  "character_map": {
+    "ł": "l",
+    "Ł": "L",
+    "İ": "I",
+    "’": "'",
+    "‘": "'",
+    "`": "'",
+    "´": "'",
+    "“": "\"",
+    "”": "\""
+  },
+  "field_maps": {
+    "domain": {
+      "coversation": "conversation",
+      "conversattion": "conversation",
+      "convrsation": "conversation"
+    },
+    "dialect_label": {
+      "conversation": "normalized_venetian",
+      "non_normalized_venetian": "normalized_venetian"
+    }
+  },
+  "field_defaults": {
+    "dialect_label": "normalized_venetian"
+  },
+  "token_maps": {
+    "target_text": {
+      "xè": "xe",
+      "Xè": "Xe",
+      "so'": "sò",
+      "So'": "Sò",
+      "voialtri": "vualtri",
+      "Voialtri": "Vualtri",
+      "vialtri": "vualtri",
+      "Vialtri": "Vualtri",
+      "valtri": "vualtri",
+      "Valtri": "Vualtri",
+      "eło": "elo",
+      "Eło": "Elo",
+      "łù": "lu",
+      "Łù": "Lu"
+    }
+  }
+}

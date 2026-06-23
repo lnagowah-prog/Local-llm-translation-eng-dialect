@@ -53,7 +53,11 @@ def normalize_record(record: dict) -> dict:
         else:
             normalized[field] = value
 
-    normalized["translation_prompt"] = TASK_PREFIX + normalized["source_text"]
+    prompt = record.get("translation_prompt", "")
+    if isinstance(prompt, str) and prompt.strip():
+        normalized["translation_prompt"] = " ".join(prompt.split())
+    else:
+        normalized["translation_prompt"] = TASK_PREFIX + normalized["source_text"]
     return normalized
 
 
@@ -102,6 +106,39 @@ def stratified_split(
     return train, dev, test
 
 
+def fixed_train_split(
+    train_records: list[dict],
+    eval_records: list[dict],
+    train_ratio: float = 0.8,
+    dev_ratio: float = 0.1,
+    seed: int = 42,
+) -> tuple[list[dict], list[dict], list[dict]]:
+    """Keep the training split fixed and sample dev/test from a separate pool."""
+    test_ratio = 1.0 - train_ratio - dev_ratio
+    if not 0.0 < train_ratio < 1.0:
+        raise ValueError("train_ratio must be between 0 and 1.")
+    if dev_ratio < 0.0 or test_ratio < 0.0:
+        raise ValueError("dev_ratio and test_ratio must be non-negative.")
+
+    rng = random.Random(seed)
+    shuffled_eval = list(eval_records)
+    rng.shuffle(shuffled_eval)
+
+    dev_count = round(len(train_records) * dev_ratio / train_ratio)
+    test_count = round(len(train_records) * test_ratio / train_ratio)
+
+    if dev_count + test_count > len(shuffled_eval):
+        raise ValueError(
+            "Evaluation pool is too small for the requested split: "
+            f"need {dev_count + test_count} records, found {len(shuffled_eval)}."
+        )
+
+    train = list(train_records)
+    dev = shuffled_eval[:dev_count]
+    test = shuffled_eval[dev_count : dev_count + test_count]
+    return train, dev, test
+
+
 def write_jsonl(records: Iterable[dict], output_file: str | Path) -> None:
     path = Path(output_file)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -110,11 +147,20 @@ def write_jsonl(records: Iterable[dict], output_file: str | Path) -> None:
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
+def renumber_records(records: Iterable[dict], start: int = 1) -> list[dict]:
+    renumbered = []
+    for index, record in enumerate(records, start=start):
+        updated = dict(record)
+        updated["id"] = f"{index:04d}"
+        renumbered.append(updated)
+    return renumbered
+
+
 def read_jsonl(input_file: str | Path) -> list[dict]:
     path = Path(input_file)
     return [
         json.loads(line)
-        for line in path.read_text(encoding="utf-8").splitlines()
+        for line in path.read_text(encoding="utf-8-sig").splitlines()
         if line.strip()
     ]
 

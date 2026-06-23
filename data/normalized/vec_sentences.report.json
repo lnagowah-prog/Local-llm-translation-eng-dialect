@@ -1,0 +1,11 @@
+{
+  "total_records": 298,
+  "changed_records": 298,
+  "field_changes": {
+    "dialect_label": 298,
+    "domain": 4,
+    "source_text": 4,
+    "target_text": 141,
+    "translation_prompt": 4
+  }
+}

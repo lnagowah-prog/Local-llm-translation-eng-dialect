@@ -1,0 +1,9 @@
+{
+  "total_records": 997,
+  "changed_records": 915,
+  "field_changes": {
+    "source_text": 18,
+    "target_text": 915,
+    "translation_prompt": 18
+  }
+}
