@@ -15,14 +15,10 @@
       "coversation": "conversation",
       "conversattion": "conversation",
       "convrsation": "conversation"
-    },
-    "dialect_label": {
-      "conversation": "normalized_venetian",
-      "non_normalized_venetian": "normalized_venetian"
     }
   },
   "field_defaults": {
-    "dialect_label": "normalized_venetian"
+    "dialect_label": "non_normalized_venetian"
   },
   "token_maps": {
     "target_text": {
@@ -38,8 +34,12 @@
       "Valtri": "Vualtri",
       "eło": "elo",
       "Eło": "Elo",
+      "eła": "ela",
+      "Eła": "Ela",
       "łù": "lu",
-      "Łù": "Lu"
+      "Łù": "Lu",
+      "ça": "sa",
+      "Ça": "Sa"  
     }
   }
 }
