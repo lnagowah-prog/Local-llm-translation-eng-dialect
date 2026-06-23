@@ -1,1 +1,77 @@
 # llm-translation-eng-dialect
+## AIM
+Build a small Machine Translation (MT) system for a low-resource language. The team picks one language they have access to (an Italian regional language like Sardinian or Neapolitan, a North-African dialect like Tunisian Arabic, a small Berber language like Tamazight, or any minority language they know personally). The team curates a tiny parallel corpus, fine-tunes a massively multilingual MT model (NLLB-200), and compares against the same model used zero-shot. Reports BLEU/chrF plus an honest writeup of what is hard about low-resource MT.
+
+
+## Dataset pipeline
+
+Run the full pipeline with:
+
+```bash
+python scripts/main.py
+```
+
+This will:
+
+1. generate the FLORES dataset in `data/`
+2. rebuild `data/full_dataset.jsonl`
+3. create normalized datasets in `data/normalized/`
+4. create processed `train/dev/test` splits in `data/processed/`
+
+## Normalization
+
+The normalization profile lives in [config/venetian_normalization.json](<your_path>/llm-translation-eng-dialect/config/venetian_normalization.json).
+
+It currently performs conservative normalization:
+
+- orthographic cleanup such as Unicode normalization, apostrophe cleanup, `ł -> l`, `xè -> xe`
+- light lexical canonicalization such as `voialtri/valtri/vialtri -> vualtri`
+- metadata cleanup such as `coversation -> conversation`
+
+To normalize a single dataset manually:
+
+```bash
+python scripts/normalize_dataset.py \
+  --input-file data/vec_sentences.jsonl \
+  --output-file data/normalized/vec_sentences.jsonl \
+  --report-file data/normalized/vec_sentences.report.json
+```
+
+## Data Provenance
+
+The dataset sources are split by role:
+
+- `train`: manual translations collected in [data/full_dataset.jsonl](/llm-translation-eng-dialect/data/full_dataset.jsonl)
+- `dev`: sampled from FLORES, generated through [scripts/dataset_flores.py](/llm-translation-eng-dialect/scripts/dataset_flores.py)
+- `test`: sampled from FLORES, generated through [scripts/dataset_flores.py](/llm-translation-eng-dialect/scripts/dataset_flores.py)
+
+In practice:
+
+- the manual translation side is the curated training source
+- the FLORES English to Venetian dataset is the evaluation pool
+- `dev` and `test` are created from that FLORES pool during the processing pipeline
+
+Relevant files:
+
+- [data/full_dataset.jsonl](llm-translation-eng-dialect/data/full_dataset.jsonl): merged manual-translation training source
+- [data/eng_Latn_vec_Latn_dataset.jsonl](llm-translation-eng-dialect/data/eng_Latn_vec_Latn_dataset.jsonl): FLORES-derived dataset
+- [data/processed/train.jsonl](llm-translation-eng-dialect/data/processed/train.jsonl): final train split
+- [data/processed/dev.jsonl](llm-translation-eng-dialect/data/processed/dev.jsonl): final dev split from FLORES
+- [data/processed/test.jsonl](llm-translation-eng-dialect/data/processed/test.jsonl): final test split from FLORES
+
+# STRUCTURE
+
+- `data/full_dataset.jsonl`: manual-translation dataset used as the training source.
+- `data/eng_Latn_vec_Latn_dataset.jsonl`: FLORES-derived dataset used as the evaluation source.
+- `data/normalized/`: normalized versions of the raw datasets.
+- `data/processed/`: final train/dev/test splits and summary files.
+- `scripts/dataset_flores.py`: generates the FLORES-based English to Venetian dataset.
+- `scripts/rebuild_full_dataset.py`: rebuilds the merged manual dataset.
+- `scripts/normalize_dataset.py`: applies normalization rules.
+- `scripts/import_dataset.py`: creates processed splits.
+- `scripts/main.py`: runs the whole pipeline.
+- `config/venetian_normalization.json`: normalization rules for orthography, lexical variants, and metadata.
+- `src/dataset.py`: dataset loading, writing, splitting, and renumbering helpers.
+- `src/normalization.py`: implementation of the Venetian normalizer.
+
+
