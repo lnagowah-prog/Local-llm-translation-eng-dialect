@@ -37,7 +37,7 @@ def build_argparser() -> argparse.ArgumentParser:
         "--eval-file",
         help="Path to the dataset used as the dev/test sampling pool.",
     )
-    parser.add_argument("--output-dir", default="data/processed", help="Directory for processed files.")
+    parser.add_argument("--output-dir", default="data/normalized", help="Directory for processed files.")
     parser.add_argument("--train-ratio", type=float, default=0.8, help="Target train ratio.")
     parser.add_argument("--dev-ratio", type=float, default=0.1, help="Target dev ratio.")
     parser.add_argument("--seed", type=int, default=42, help="Random seed for deterministic splits.")

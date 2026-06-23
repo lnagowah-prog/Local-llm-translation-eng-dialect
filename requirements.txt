@@ -1,0 +1,22 @@
+# Core ML
+torch>=2.1
+transformers>=4.38
+sentencepiece
+accelerate
+
+# Training
+datasets>=2.18
+
+# Evaluation
+sacrebleu>=2.4
+evaluate
+
+# Data / corpus
+pandas
+kagglehub[pandas-datasets]
+
+# LLM baseline
+openai>=1.30
+
+# Utilities
+python-dotenv
