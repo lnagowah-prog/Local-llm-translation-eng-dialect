@@ -17,6 +17,7 @@ This will:
 2. rebuild `data/full_dataset.jsonl`
 3. create normalized datasets in `data/normalized/`
 4. create processed `train/dev/test` splits in `data/processed/`
+5. export normalized `train/dev/test` files in `data/normalized/`
 
 ## Normalization
 
@@ -58,12 +59,16 @@ Relevant files:
 - [data/processed/train.jsonl](llm-translation-eng-dialect/data/processed/train.jsonl): final train split
 - [data/processed/dev.jsonl](llm-translation-eng-dialect/data/processed/dev.jsonl): final dev split from FLORES
 - [data/processed/test.jsonl](llm-translation-eng-dialect/data/processed/test.jsonl): final test split from FLORES
+- [data/normalized/train.jsonl](llm-translation-eng-dialect/data/normalized/train.jsonl): normalized train split
+- [data/normalized/dev.jsonl](llm-translation-eng-dialect/data/normalized/dev.jsonl): normalized dev split
+- [data/normalized/test.jsonl](llm-translation-eng-dialect/data/normalized/test.jsonl): normalized test split
 
 # STRUCTURE
 
 - `data/full_dataset.jsonl`: manual-translation dataset used as the training source.
 - `data/eng_Latn_vec_Latn_dataset.jsonl`: FLORES-derived dataset used as the evaluation source.
 - `data/normalized/`: normalized versions of the raw datasets.
+- `data/normalized/train.jsonl`, `dev.jsonl`, `test.jsonl`: normalized split files.
 - `data/processed/`: final train/dev/test splits and summary files.
 - `scripts/dataset_flores.py`: generates the FLORES-based English to Venetian dataset.
 - `scripts/rebuild_full_dataset.py`: rebuilds the merged manual dataset.
@@ -73,5 +78,4 @@ Relevant files:
 - `config/venetian_normalization.json`: normalization rules for orthography, lexical variants, and metadata.
 - `src/dataset.py`: dataset loading, writing, splitting, and renumbering helpers.
 - `src/normalization.py`: implementation of the Venetian normalizer.
-
 

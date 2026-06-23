@@ -92,6 +92,48 @@ def main() -> None:
             "42",
         ],
     )
+    run_step(
+        "Export normalized train split",
+        [
+            python,
+            "-B",
+            str(SCRIPTS_DIR / "normalize_dataset.py"),
+            "--input-file",
+            str(DATA_DIR / "processed" / "train.jsonl"),
+            "--output-file",
+            str(NORMALIZED_DIR / "train.jsonl"),
+            "--report-file",
+            str(NORMALIZED_DIR / "train.report.json"),
+        ],
+    )
+    run_step(
+        "Export normalized dev split",
+        [
+            python,
+            "-B",
+            str(SCRIPTS_DIR / "normalize_dataset.py"),
+            "--input-file",
+            str(DATA_DIR / "processed" / "dev.jsonl"),
+            "--output-file",
+            str(NORMALIZED_DIR / "dev.jsonl"),
+            "--report-file",
+            str(NORMALIZED_DIR / "dev.report.json"),
+        ],
+    )
+    run_step(
+        "Export normalized test split",
+        [
+            python,
+            "-B",
+            str(SCRIPTS_DIR / "normalize_dataset.py"),
+            "--input-file",
+            str(DATA_DIR / "processed" / "test.jsonl"),
+            "--output-file",
+            str(NORMALIZED_DIR / "test.jsonl"),
+            "--report-file",
+            str(NORMALIZED_DIR / "test.report.json"),
+        ],
+    )
 
 
 if __name__ == "__main__":
