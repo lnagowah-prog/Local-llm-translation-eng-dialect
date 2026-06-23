@@ -20,3 +20,6 @@ openai>=1.30
 
 # Utilities
 python-dotenv
+
+# Demo
+streamlit

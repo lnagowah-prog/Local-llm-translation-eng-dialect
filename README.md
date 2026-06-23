@@ -79,3 +79,47 @@ Relevant files:
 - `src/dataset.py`: dataset loading, writing, splitting, and renumbering helpers.
 - `src/normalization.py`: implementation of the Venetian normalizer.
 
+- `scripts/demo_app.py`: Streamlit demo for aggregate metrics and sentence-level zero-shot versus fine-tuned comparisons.
+
+## Interactive demo
+
+The interactive demo is implemented in `scripts/demo_app.py` with Streamlit. It uses the saved prediction and evaluation files, so it does not load either NLLB model at runtime and starts quickly enough for a short live presentation.
+
+The demo expects these files:
+
+- `data/normalized/train.jsonl`
+- `data/normalized/dev.jsonl`
+- `data/normalized/test.jsonl`
+- `data/results/nllb_zeroshot_predictions.jsonl`
+- `data/results/nllb_finetuned_predictions.jsonl`
+- `data/results/evaluation_results.json`
+
+Generate the baseline predictions, fine-tuned predictions, and aggregate evaluation results before starting the demo. If these files already exist, this step can be skipped.
+
+Install the project dependencies, including Streamlit, with:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Run the demo from the repository root with:
+
+```bash
+python -m streamlit run scripts/demo_app.py
+```
+
+Streamlit will open the application in the browser. By default, it is available at:
+
+```text
+http://localhost:8501
+```
+
+The demo displays:
+
+1. the train, development, and test split sizes
+2. aggregate BLEU and chrF scores for NLLB zero-shot and NLLB fine-tuned
+3. the number of sentence-level improvements, regressions, and equal scores
+4. a fixed presentation example plus the largest improvements and regressions
+5. the main experimental takeaway
+
+The demo reads saved results only. It does not run training or inference during the presentation.
