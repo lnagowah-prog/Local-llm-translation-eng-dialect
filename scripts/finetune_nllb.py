@@ -29,6 +29,12 @@ from transformers import (
     Seq2SeqTrainingArguments,
 )
 
+try:
+    from peft import LoraConfig, TaskType, get_peft_model
+    _PEFT_AVAILABLE = True
+except ImportError:
+    _PEFT_AVAILABLE = False
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SRC_DIR = PROJECT_ROOT / "src"
 if str(SRC_DIR) not in sys.path:
@@ -60,6 +66,12 @@ def build_argparser() -> argparse.ArgumentParser:
                    help="Beam size for generation during dev eval. Must match baseline_nllb_zeroshot.py.")
     p.add_argument("--no-fp16", action="store_true",
                    help="Disable fp16 (use on CPU or when GPU does not support it).")
+    p.add_argument("--lora", action="store_true",
+                   help="Apply LoRA adapters (requires peft). Fewer trainable params, less forgetting.")
+    p.add_argument("--lora-rank", type=int, default=16, metavar="R",
+                   help="LoRA rank r (default 16).")
+    p.add_argument("--lora-alpha", type=int, default=32, metavar="A",
+                   help="LoRA scaling alpha (default 32).")
     return p
 
 
@@ -119,6 +131,20 @@ def main() -> None:
     tgt_lang_id = tokenizer.convert_tokens_to_ids(TGT_LANG)
     model.generation_config.forced_bos_token_id = tgt_lang_id
 
+    if args.lora:
+        if not _PEFT_AVAILABLE:
+            sys.exit("LoRA requires peft. Install it with: pip install peft")
+        lora_config = LoraConfig(
+            task_type=TaskType.SEQ_2_SEQ_LM,
+            r=args.lora_rank,
+            lora_alpha=args.lora_alpha,
+            target_modules=["q_proj", "v_proj"],
+            lora_dropout=0.1,
+            bias="none",
+        )
+        model = get_peft_model(model, lora_config)
+        model.print_trainable_parameters()
+
     print("Tokenising datasets ...")
     tokenize = make_tokenize_fn(tokenizer, args.max_length)
     cols_to_remove = ["source_text", "target_text"]
@@ -168,14 +194,18 @@ def main() -> None:
     print(f"Training for up to {args.epochs} epochs ...")
     trainer.train()
 
-    print(f"Saving best checkpoint → {output_dir}")
-    trainer.save_model(str(output_dir))
-    tokenizer.save_pretrained(str(output_dir))
-
     print("\nFinal dev evaluation:")
     metrics = trainer.evaluate()
     for k, v in metrics.items():
         print(f"  {k}: {v}")
+
+    print(f"Saving checkpoint → {output_dir}")
+    if args.lora:
+        merged = trainer.model.merge_and_unload()
+        merged.save_pretrained(str(output_dir))
+    else:
+        trainer.save_model(str(output_dir))
+    tokenizer.save_pretrained(str(output_dir))
 
 
 if __name__ == "__main__":

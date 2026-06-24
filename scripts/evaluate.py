@@ -31,11 +31,16 @@ if str(SRC_DIR) not in sys.path:
 
 from dataset import read_jsonl
 
-SYSTEMS: list[tuple[str, str]] = [
-    ("nllb_zeroshot",   "NLLB zero-shot"),
-    ("nllb_finetuned",  "NLLB fine-tuned"),
-    ("llm_zeroshot",    "LLM zero-shot"),
-]
+DISPLAY_NAMES: dict[str, str] = {
+    "nllb_zeroshot":  "NLLB zero-shot",
+    "nllb_finetuned": "NLLB fine-tuned",
+    "llm_zeroshot":   "LLM zero-shot",
+}
+_KNOWN_ORDER = list(DISPLAY_NAMES)
+
+
+def system_label(system_id: str) -> str:
+    return DISPLAY_NAMES.get(system_id, system_id.replace("_", " "))
 
 
 def build_argparser() -> argparse.ArgumentParser:
@@ -87,12 +92,13 @@ def score_system(predictions: list[dict]) -> dict:
     }
 
 
-def print_table(results: dict[str, dict]) -> None:
-    col_w = 22
+def print_table(results: dict[str, dict], ordered_systems: list[tuple[str, str]]) -> None:
+    col_w = max((len(label) for _, label in ordered_systems), default=22)
+    col_w = max(col_w, len("System"))
     print()
     print(f"{'System':<{col_w}}  {'BLEU':>6}  {'chrF':>6}  {'Human':>6}  {'n':>4}")
     print("─" * col_w + "  " + "─" * 6 + "  " + "─" * 6 + "  " + "─" * 6 + "  " + "─" * 4)
-    for system_id, label in SYSTEMS:
+    for system_id, label in ordered_systems:
         if system_id not in results:
             continue
         r = results[system_id]
@@ -112,15 +118,25 @@ def main() -> None:
 
     results: dict[str, dict] = {}
 
-    for system_id, label in SYSTEMS:
-        pred_file = results_dir / f"{system_id}_predictions.jsonl"
-        if not pred_file.exists():
-            print(f"  ⚠  {pred_file.name} not found — skipping {label}")
-            continue
+    pred_files = sorted(results_dir.glob("*_predictions.jsonl"))
+    if not pred_files:
+        sys.exit(f"No *_predictions.jsonl files found in {results_dir}. Run the baseline scripts first.")
+
+    def _sort_key(path: Path) -> tuple:
+        sid = path.stem.replace("_predictions", "")
+        idx = _KNOWN_ORDER.index(sid) if sid in _KNOWN_ORDER else len(_KNOWN_ORDER)
+        return (idx, sid)
+
+    pred_files = sorted(pred_files, key=_sort_key)
+    ordered_systems: list[tuple[str, str]] = []
+
+    for pred_file in pred_files:
+        system_id = pred_file.stem.replace("_predictions", "")
+        label = system_label(system_id)
 
         predictions = read_jsonl(pred_file)
         if not predictions:
-            print(f"  ⚠  {pred_file.name} is empty — skipping {label}")
+            print(f"  ⚠  {pred_file.name} is empty — skipping")
             continue
 
         scores = score_system(predictions)
@@ -128,12 +144,13 @@ def main() -> None:
             scores["human_rating"] = human_ratings[system_id]
 
         results[system_id] = scores
+        ordered_systems.append((system_id, label))
         print(f"  Scored {len(predictions)} sentences for {label}")
 
     if not results:
-        sys.exit("No prediction files found. Run the baseline scripts first.")
+        sys.exit("All prediction files were empty.")
 
-    print_table(results)
+    print_table(results, ordered_systems)
 
     output = {
         "results_dir": str(results_dir),
@@ -144,10 +161,10 @@ def main() -> None:
     print(f"Results saved → {out_path}")
 
     if any(r["human_rating"] is None for r in results.values()):
+        systems_str = " ".join(f"{sid}=?" for sid in results)
         print(
             "Tip: add human acceptability scores (1–5) with:\n"
-            "  python scripts/evaluate.py "
-            "--human-ratings nllb_zeroshot=? nllb_finetuned=? llm_zeroshot=?"
+            f"  python scripts/evaluate.py --human-ratings {systems_str}"
         )
 
 
