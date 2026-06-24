@@ -71,7 +71,7 @@ def translate_batch(
         output_ids = model.generate(
             **inputs,
             forced_bos_token_id=tgt_lang_id,
-            max_length=max_length,
+            max_new_tokens=max_length,
             num_beams=num_beams,
         )
     return tokenizer.batch_decode(output_ids, skip_special_tokens=True)
