@@ -1,22 +1,22 @@
 {
   "split_mode": "fixed_train_eval_pool",
   "full": {
-    "num_examples": 622,
+    "num_examples": 675,
     "domains": {
       "": 9,
-      "conversation": 267,
+      "conversation": 269,
       "daily_life": 30,
       "family": 20,
       "food": 21,
       "greeting": 12,
       "health": 11,
-      "narrative": 22,
+      "narrative": 62,
       "please": 1,
       "proverb": 14,
       "public_services": 21,
       "school": 22,
       "travel": 38,
-      "unknown": 124,
+      "unknown": 135,
       "weather": 10
     },
     "source_language_codes": [
@@ -26,12 +26,12 @@
       "vec_Latn"
     ]
   },
-  "train_source_size": 498,
+  "train_source_size": 540,
   "eval_source_size": 997,
-  "train_size": 498,
-  "dev_size": 62,
-  "test_size": 62,
-  "actual_train_ratio": 0.8006430868167203,
-  "actual_dev_ratio": 0.09967845659163987,
-  "actual_test_ratio": 0.09967845659163987
+  "train_size": 540,
+  "dev_size": 68,
+  "test_size": 67,
+  "actual_train_ratio": 0.8,
+  "actual_dev_ratio": 0.10074074074074074,
+  "actual_test_ratio": 0.09925925925925926
 }
