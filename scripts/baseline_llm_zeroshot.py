@@ -33,14 +33,14 @@ if str(SRC_DIR) not in sys.path:
 from dataset import read_jsonl, write_jsonl
 
 MODEL_ID = "gpt-5-mini"
-DEFAULT_MAX_TOKENS = 256
+DEFAULT_MAX_TOKENS = 2048
 DEFAULT_DELAY = 0.2  # seconds between requests; increase if hitting rate limits
 
-SYSTEM_PROMPT = (
+USER_PROMPT_TEMPLATE = (
     "You are a professional translator specialising in the Venetian dialect "
     "of northeastern Italy (Veneto region). "
-    "Translate the sentence the user sends into Venetian. "
-    "Reply with only the translation — no explanations, no alternatives."
+    "Translate the following English sentence into Venetian. "
+    "Reply with only the translation — no explanations, no alternatives.\n\n{text}"
 )
 
 
@@ -81,11 +81,9 @@ def translate_one(
             response = client.chat.completions.create(
                 model=model,
                 messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": text},
+                    {"role": "user", "content": USER_PROMPT_TEMPLATE.format(text=text)},
                 ],
-                temperature=0,
-                max_tokens=max_tokens,
+                max_completion_tokens=max_tokens,
             )
             return response.choices[0].message.content.strip()
         except openai.RateLimitError:

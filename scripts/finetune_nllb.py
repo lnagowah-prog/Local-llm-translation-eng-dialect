@@ -116,9 +116,7 @@ def main() -> None:
     tokenizer = AutoTokenizer.from_pretrained(args.model, src_lang=SRC_LANG, tgt_lang=TGT_LANG)
     model = AutoModelForSeq2SeqLM.from_pretrained(args.model)
 
-    # Tell the model which language token to start generation with
     tgt_lang_id = tokenizer.convert_tokens_to_ids(TGT_LANG)
-    model.config.forced_bos_token_id = tgt_lang_id
     model.generation_config.forced_bos_token_id = tgt_lang_id
 
     print("Tokenising datasets ...")

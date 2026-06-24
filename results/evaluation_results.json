@@ -1,0 +1,23 @@
+{
+  "results_dir": "/content/llm-translation-eng-dialect/data/results",
+  "systems": {
+    "nllb_zeroshot": {
+      "bleu": 16.31,
+      "chrf": 50.78,
+      "n": 62,
+      "human_rating": null
+    },
+    "nllb_finetuned": {
+      "bleu": 14.33,
+      "chrf": 49.52,
+      "n": 62,
+      "human_rating": null
+    },
+    "llm_zeroshot": {
+      "bleu": 15.72,
+      "chrf": 47.89,
+      "n": 62,
+      "human_rating": null
+    }
+  }
+}
