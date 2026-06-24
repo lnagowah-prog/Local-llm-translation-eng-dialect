@@ -14,10 +14,12 @@ python scripts/main.py
 This will:
 
 1. generate the FLORES dataset in `data/`
-2. rebuild `data/full_dataset.jsonl`
-3. create normalized datasets in `data/normalized/`
-4. create processed `train/dev/test` splits in `data/processed/`
-5. export normalized `train/dev/test` files in `data/normalized/`
+2. normalize `data/vec_sentences.jsonl` into the standard record file in `data/normalized/`
+3. convert `data/raw/wikipedia_candidates.jsonl` into standard dataset records in `data/wikipedia_candidates.jsonl`
+4. rebuild `data/full_dataset.jsonl` from those standardized records
+5. create normalized datasets in `data/normalized/`
+6. create processed `train/dev/test` splits in `data/processed/`
+7. export normalized `train/dev/test` files in `data/normalized/`
 
 ## Normalization
 
@@ -28,6 +30,7 @@ It currently performs conservative normalization:
 - orthographic cleanup such as Unicode normalization, apostrophe cleanup, `ł -> l`, `xè -> xe`
 - light lexical canonicalization such as `voialtri/valtri/vialtri -> vualtri`
 - metadata cleanup such as `coversation -> conversation`
+- prompt standardization so every record uses `translate English to Venetian: ...`
 
 To normalize a single dataset manually:
 
@@ -49,6 +52,8 @@ The dataset sources are split by role:
 In practice:
 
 - the manual translation side is the curated training source
+- `data/normalized/vec_sentences.jsonl` is the standardized manual-record source used to rebuild `full_dataset`
+- `data/wikipedia_candidates.jsonl` is the standardized Wikipedia-candidate source used to extend `full_dataset`
 - the FLORES English to Venetian dataset is the evaluation pool
 - `dev` and `test` are created from that FLORES pool during the processing pipeline
 

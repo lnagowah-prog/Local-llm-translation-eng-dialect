@@ -14,12 +14,14 @@
     "domain": {
       "coversation": "conversation",
       "conversattion": "conversation",
-      "convrsation": "conversation"
+      "convrsation": "conversation",
+      "wikipedia": "wikipedia"
     }
   },
   "field_defaults": {
-    "dialect_label": "non_normalized_venetian"
+    "dialect_label": "non_normalized_venetian,wikipedia_venetian"
   },
+  "standardize_translation_prompt": true,
   "token_maps": {
     "target_text": {
       "xè": "xe",

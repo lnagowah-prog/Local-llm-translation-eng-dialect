@@ -1,10 +1,10 @@
 {
   "total_records": 340,
-  "changed_records": 187,
+  "changed_records": 338,
   "field_changes": {
     "domain": 4,
     "source_text": 4,
     "target_text": 180,
-    "translation_prompt": 4
+    "translation_prompt": 300
   }
 }

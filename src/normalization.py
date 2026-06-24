@@ -8,6 +8,8 @@ import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
 
+from constants import TASK_PREFIX
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "venetian_normalization.json"
@@ -45,6 +47,7 @@ class VenetianNormalizer:
         self.character_map = str.maketrans(profile.get("character_map", {}))
         self.field_maps = profile.get("field_maps", {})
         self.field_defaults = profile.get("field_defaults", {})
+        self.standardize_translation_prompt = profile.get("standardize_translation_prompt", False)
         self.token_maps = profile.get("token_maps", {})
         self.token_patterns = {
             field: _build_token_pattern(mapping)
@@ -78,6 +81,14 @@ class VenetianNormalizer:
             if updated != value:
                 normalized[field] = updated
                 changed_fields[field] = True
+
+        if self.standardize_translation_prompt:
+            source_text = normalized.get("source_text")
+            if isinstance(source_text, str) and source_text.strip():
+                standard_prompt = TASK_PREFIX + source_text
+                if normalized.get("translation_prompt") != standard_prompt:
+                    normalized["translation_prompt"] = standard_prompt
+                    changed_fields["translation_prompt"] = True
 
         return normalized, changed_fields
 

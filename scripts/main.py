@@ -70,10 +70,6 @@ def add_data_prep_steps(steps: list[tuple[str, list[str]]], python: str) -> None
                 [python, "-B", str(SCRIPTS_DIR / "dataset_flores.py")],
             ),
             (
-                "Rebuild merged full dataset",
-                [python, "-B", str(SCRIPTS_DIR / "rebuild_full_dataset.py")],
-            ),
-            (
                 "Normalize vec_sentences",
                 [
                     python,
@@ -86,6 +82,14 @@ def add_data_prep_steps(steps: list[tuple[str, list[str]]], python: str) -> None
                     "--report-file",
                     str(REPORT_DIR / "vec_sentences.report.json"),
                 ],
+            ),
+            (
+                "Prepare Wikipedia candidates",
+                [python, "-B", str(SCRIPTS_DIR / "prepare_wikipedia_candidates.py")],
+            ),
+            (
+                "Rebuild merged full dataset",
+                [python, "-B", str(SCRIPTS_DIR / "rebuild_full_dataset.py")],
             ),
             (
                 "Normalize full_dataset",

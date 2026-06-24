@@ -1,7 +1,7 @@
 {
   "split_mode": "fixed_train_eval_pool",
   "full": {
-    "num_examples": 675,
+    "num_examples": 817,
     "domains": {
       "": 9,
       "conversation": 269,
@@ -16,8 +16,9 @@
       "public_services": 21,
       "school": 22,
       "travel": 38,
-      "unknown": 135,
-      "weather": 10
+      "unknown": 164,
+      "weather": 10,
+      "wikipedia": 113
     },
     "source_language_codes": [
       "eng_Latn"
@@ -26,12 +27,12 @@
       "vec_Latn"
     ]
   },
-  "train_source_size": 540,
+  "train_source_size": 653,
   "eval_source_size": 997,
-  "train_size": 540,
-  "dev_size": 68,
-  "test_size": 67,
-  "actual_train_ratio": 0.8,
-  "actual_dev_ratio": 0.10074074074074074,
-  "actual_test_ratio": 0.09925925925925926
+  "train_size": 653,
+  "dev_size": 82,
+  "test_size": 82,
+  "actual_train_ratio": 0.799265605875153,
+  "actual_dev_ratio": 0.1003671970624235,
+  "actual_test_ratio": 0.1003671970624235
 }
