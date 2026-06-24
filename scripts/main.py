@@ -11,6 +11,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = PROJECT_ROOT / "data"
 NORMALIZED_DIR = DATA_DIR / "normalized"
+REPORT_DIR = DATA_DIR / "reports"
 SCRIPTS_DIR = PROJECT_ROOT / "scripts"
 
 
@@ -41,7 +42,7 @@ def main() -> None:
             "--output-file",
             str(NORMALIZED_DIR / "vec_sentences.jsonl"),
             "--report-file",
-            str(NORMALIZED_DIR / "vec_sentences.report.json"),
+            str(REPORT_DIR / "vec_sentences.report.json"),
         ],
     )
     run_step(
@@ -55,7 +56,7 @@ def main() -> None:
             "--output-file",
             str(NORMALIZED_DIR / "full_dataset.jsonl"),
             "--report-file",
-            str(NORMALIZED_DIR / "full_dataset.report.json"),
+            str(REPORT_DIR / "full_dataset.report.json"),
         ],
     )
     run_step(
@@ -69,7 +70,7 @@ def main() -> None:
             "--output-file",
             str(NORMALIZED_DIR / "eng_Latn_vec_Latn_dataset.jsonl"),
             "--report-file",
-            str(NORMALIZED_DIR / "eng_Latn_vec_Latn_dataset.report.json"),
+            str(REPORT_DIR / "eng_Latn_vec_Latn_dataset.report.json"),
         ],
     )
     run_step(
@@ -103,7 +104,7 @@ def main() -> None:
             "--output-file",
             str(NORMALIZED_DIR / "train.jsonl"),
             "--report-file",
-            str(NORMALIZED_DIR / "train.report.json"),
+            str(REPORT_DIR / "train.report.json"),
         ],
     )
     run_step(
@@ -117,7 +118,7 @@ def main() -> None:
             "--output-file",
             str(NORMALIZED_DIR / "dev.jsonl"),
             "--report-file",
-            str(NORMALIZED_DIR / "dev.report.json"),
+            str(REPORT_DIR / "dev.report.json"),
         ],
     )
     run_step(
@@ -131,7 +132,7 @@ def main() -> None:
             "--output-file",
             str(NORMALIZED_DIR / "test.jsonl"),
             "--report-file",
-            str(NORMALIZED_DIR / "test.report.json"),
+            str(REPORT_DIR / "test.report.json"),
         ],
     )
 
