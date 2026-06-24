@@ -100,6 +100,9 @@ def make_compute_metrics(tokenizer: AutoTokenizer):
         if isinstance(preds, tuple):
             preds = preds[0]
 
+        # Cast to int64 and mask out-of-range IDs (LoRA+fp16 can produce negative values)
+        preds = np.where(preds < 0, tokenizer.pad_token_id, preds).astype(np.int64)
+
         # -100 is the HuggingFace ignore index used for padding in labels
         labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
 
