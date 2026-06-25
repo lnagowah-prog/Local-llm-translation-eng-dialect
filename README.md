@@ -84,11 +84,23 @@ Relevant files:
 - `src/dataset.py`: dataset loading, writing, splitting, and renumbering helpers.
 - `src/normalization.py`: implementation of the Venetian normalizer.
 
-- `scripts/demo_app.py`: Streamlit demo for aggregate metrics and sentence-level zero-shot versus fine-tuned comparisons.
+- `scripts/demo_app.py`: Streamlit demo for aggregate evaluation, sentence-level comparison, and interactive English-to-Venetian translation.
 
 ## Interactive demo
 
-The interactive demo is implemented in `scripts/demo_app.py` with Streamlit. It uses the saved prediction and evaluation files, so it does not load either NLLB model at runtime and starts quickly enough for a short live presentation.
+The interactive demo is implemented in `scripts/demo_app.py` with Streamlit. It combines precomputed evaluation results with runtime translation of user-provided English sentences.
+
+The evaluation compares three systems:
+
+- NLLB zero-shot
+- LLM zero-shot
+- Fine-tuned NLLB
+
+The current dataset contains:
+
+- 653 training examples
+- 82 development examples
+- 82 test examples
 
 The demo expects these files:
 
@@ -96,10 +108,19 @@ The demo expects these files:
 - `data/normalized/dev.jsonl`
 - `data/normalized/test.jsonl`
 - `data/results/nllb_zeroshot_predictions.jsonl`
-- `data/results/nllb_finetuned_predictions.jsonl`
+- `data/results/llm_zeroshot_predictions.jsonl`
+- `data/results/ablation_A0_predictions.jsonl`
 - `data/results/evaluation_results.json`
 
-Generate the baseline predictions, fine-tuned predictions, and aggregate evaluation results before starting the demo. If these files already exist, this step can be skipped.
+The current aggregate test results are:
+
+| System | BLEU | chrF |
+|---|---:|---:|
+| NLLB zero-shot | 15.89 | 49.97 |
+| LLM zero-shot | 16.43 | 49.74 |
+| Fine-tuned NLLB | 16.07 | 51.50 |
+
+The fine-tuned NLLB model improves the original NLLB zero-shot baseline by 0.18 BLEU and 1.53 chrF points.
 
 Install the project dependencies, including Streamlit, with:
 
@@ -122,9 +143,28 @@ http://localhost:8501
 The demo displays:
 
 1. the train, development, and test split sizes
-2. aggregate BLEU and chrF scores for NLLB zero-shot and NLLB fine-tuned
-3. the number of sentence-level improvements, regressions, and equal scores
-4. a fixed presentation example plus the largest improvements and regressions
-5. the main experimental takeaway
+2. aggregate BLEU and chrF scores for all three evaluated systems
+3. sentence-level comparisons against the Venetian reference
+4. a fixed presentation example, the largest fine-tuning improvements and regressions, and all test examples
+5. an interactive text field for translating new English sentences into Venetian
+6. the main experimental takeaway
 
-The demo reads saved results only. It does not run training or inference during the presentation.
+The aggregate metrics and sentence-level comparisons use the saved prediction files. Free-text translation performs inference at runtime.
+
+The public NLLB zero-shot model is downloaded automatically from Hugging Face when first used. To use the fine-tuned NLLB system, provide either:
+
+- a local checkpoint path, such as `models/nllb_finetuned_updated`
+- a compatible Hugging Face model ID
+
+The local fine-tuned checkpoint directory must contain the model configuration, tokenizer files, and model weights, for example:
+
+```text
+models/nllb_finetuned_updated/
+├── config.json
+├── generation_config.json
+├── model.safetensors
+├── tokenizer_config.json
+└── tokenizer.json
+```
+
+Model checkpoints are not stored in the standard Git repository because of their size. The `models/` directory is excluded through `.gitignore`. A shared Drive or Hugging Face location can be used to distribute the fine-tuned checkpoint.
