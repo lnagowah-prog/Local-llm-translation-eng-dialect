@@ -1,0 +1,23 @@
+{
+  "results_dir": "/home/linda/Dottorato/llm-translation-eng-dialect/data/results",
+  "systems": {
+    "nllb_zeroshot": {
+      "bleu": 15.89,
+      "chrf": 49.97,
+      "n": 82,
+      "human_rating": null
+    },
+    "llm_zeroshot": {
+      "bleu": 16.43,
+      "chrf": 49.74,
+      "n": 82,
+      "human_rating": null
+    },
+    "ablation_A0": {
+      "bleu": 16.07,
+      "chrf": 51.5,
+      "n": 82,
+      "human_rating": null
+    }
+  }
+}

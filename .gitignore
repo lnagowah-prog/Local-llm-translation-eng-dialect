@@ -1,6 +1,6 @@
 .venv/
 models/
-data/results/
+.vscode/
 __pycache__/
 *.pyc
 *.bak
