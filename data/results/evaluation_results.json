@@ -1,5 +1,5 @@
 {
-  "results_dir": "/home/linda/Dottorato/llm-translation-eng-dialect/data/results",
+  "results_dir": "/content/llm-translation-eng-dialect/data/results",
   "systems": {
     "nllb_zeroshot": {
       "bleu": 15.89,
@@ -16,6 +16,24 @@
     "ablation_A0": {
       "bleu": 16.07,
       "chrf": 51.5,
+      "n": 82,
+      "human_rating": null
+    },
+    "ablation_A1": {
+      "bleu": 16.15,
+      "chrf": 51.16,
+      "n": 82,
+      "human_rating": null
+    },
+    "ablation_A2": {
+      "bleu": 15.94,
+      "chrf": 49.58,
+      "n": 82,
+      "human_rating": null
+    },
+    "ablation_A3": {
+      "bleu": 16.14,
+      "chrf": 50.02,
       "n": 82,
       "human_rating": null
     }
